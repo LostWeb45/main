@@ -50,7 +50,7 @@ export default async function EventPage({
               <CarouselItem key={i}>
                 <div className="relative overflow-hidden aspect-[16/9] mx-auto">
                   <img
-                    src={`http://82.202.128.170:4000${img.imageUrl}`}
+                    src={`http://82.202.128.170:4000/${img.imageUrl}`}
                     alt={`img-${i}`}
                     className="object-cover w-full h-full transition-all duration-300 transform hover:scale-105"
                   />
