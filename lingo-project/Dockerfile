@@ -3,12 +3,11 @@ FROM node:23-alpine
 WORKDIR /app
 
 COPY package*.json ./
-
 RUN npm install --legacy-peer-deps --production
 
-RUN npm run build
-
 COPY . .
+
+RUN npm run build
 
 EXPOSE 3000
 
