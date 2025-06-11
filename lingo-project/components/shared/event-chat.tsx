@@ -34,11 +34,11 @@ export function EventChat({
   useEffect(() => {
     if (!isParticipant) return;
 
-    fetch(`http://localhost:5000/events/${eventId}/messages`)
+    fetch(`http://82.202.128.170:5000/events/${eventId}/messages`)
       .then((res) => res.json())
       .then((data: ChatMessage[]) => setMessages(data));
 
-    socketRef.current = io("http://localhost:5001", {
+    socketRef.current = io("http://82.202.128.170:5001", {
       query: { eventId: eventId.toString(), userId: userId.toString() },
     });
 
