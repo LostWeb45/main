@@ -1,0 +1,49 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Docker
+*.pid
+*.seed
+docker-compose.override.yml
+**/uploads/
+**/coverage/
+**/dist/
+**/build/
+**/.next/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitmodules
+
+# VS Code
+.vscode/
+.idea/
+
+# OS-specific
+*.swp
+*.swo
+
+# Ignore postgresql volumes (optional)
+postgres/
+pgdata-chat/
+
+# Ignore uploads and user-generated data
+**/uploads/

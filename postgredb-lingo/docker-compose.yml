@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:10.3
+    container_name: lingo-db
+    restart: always
+    environment:
+      - POSTGRES_DB=lingo
+      - POSTGRES_USER=kostik
+      - POSTGRES_PASSWORD=kostik
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: kostik052005@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: kostik052005
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres:

@@ -1,0 +1,146 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("POSTGRES_URL")
+}
+
+enum Role {
+    USER
+    ORGANIZER
+    ADMIN
+}
+
+enum AccountType {
+    OAUTH
+    CREDENTIALS
+}
+
+model User {
+    id            Int       @id @default(autoincrement())
+    name          String
+    email         String    @unique
+    password      String
+    emailVerified DateTime?
+    image         String?
+    telegramId    String?
+    role          Role      @default(USER)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+
+    verificationCode    VerificationCode?
+    accounts            Account[]
+    sessions            Session[]
+    events              Event[]           @relation("EventCreator")
+    eventsAsParticipant Event[]           @relation("EventParticipants")
+}
+
+model VerificationCode {
+    id Int @id @default(autoincrement())
+
+    userId Int  @unique
+    user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    code String
+
+    expiresAt DateTime @default(now())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId, code])
+}
+
+model Account {
+    id                Int     @id @default(autoincrement())
+    userId            Int
+    type              String
+    provider          String
+    providerAccountId String
+    access_token      String?
+    refresh_token     String?
+    scope             String?
+    token_type        String?
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id])
+
+    @@unique([provider, providerAccountId])
+}
+
+model Session {
+    id           Int      @id @default(autoincrement())
+    sessionToken String   @unique
+    userId       Int
+    expires      DateTime
+
+    user User @relation(fields: [userId], references: [id])
+}
+
+model Event {
+    id                Int      @id @default(autoincrement())
+    title             String
+    description       String
+    startDate         DateTime
+    startTime         String
+    duration          Int
+    price             Int?
+    place             String
+    archive           Boolean  @default(false)
+    age               Int      @default(0)
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+    participantsCount Int      @default(2)
+
+    createdById Int
+    createdBy   User @relation("EventCreator", fields: [createdById], references: [id])
+
+    categoryId Int
+    category   Category @relation(fields: [categoryId], references: [id])
+
+    townId Int
+    town   Town @relation(fields: [townId], references: [id])
+
+    statusId Int
+    status   Status @relation(fields: [statusId], references: [id])
+
+    images EventImage[]
+
+    participants User[] @relation("EventParticipants")
+}
+
+model EventImage {
+    id       Int    @id @default(autoincrement())
+    imageUrl String
+    eventId  Int
+    event    Event  @relation(fields: [eventId], references: [id])
+}
+
+model Category {
+    id     Int     @id @default(autoincrement())
+    name   String  @unique
+    image  String?
+    events Event[]
+}
+
+model Town {
+    id     Int     @id @default(autoincrement())
+    name   String  @unique
+    events Event[]
+}
+
+model Status {
+    id     Int     @id @default(autoincrement())
+    name   String  @unique
+    events Event[]
+}
+
+model TelegramGroup {
+    id             Int      @id @default(autoincrement())
+    telegramChatId String   @unique
+    name           String
+    eventId        Int?
+    createdAt      DateTime @default(now())
+}

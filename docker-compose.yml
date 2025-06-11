@@ -1,0 +1,95 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:10.3
+    container_name: lingo-db
+    restart: always
+    environment:
+      POSTGRES_DB: lingo
+      POSTGRES_USER: kostik
+      POSTGRES_PASSWORD: kostik
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  postgres-chat:
+    image: postgres:15
+    container_name: lingo-chat-db
+    restart: always
+    environment:
+      POSTGRES_DB: chatdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata-chat:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: kostik052005@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: kostik052005
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+      - postgres-chat
+
+  image-service:
+    build: ./image-service
+    container_name: image-service
+    restart: always
+    environment:
+      PORT: 4000
+      DATABASE_URL: postgresql://kostik:kostik@postgres:5432/lingo
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+    volumes:
+      - ./image-service/uploads:/app/uploads
+    command: npm run start
+
+  chat-service:
+    build: ./lingo-chats
+    container_name: chat-service
+    restart: always
+    environment:
+      PORT: 5000
+      DATABASE_URL: postgresql://postgres:postgres@postgres-chat:5432/chatdb
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    depends_on:
+      - postgres-chat
+    command: npm run start
+
+  nextjs:
+    build: ./lingo-project
+    container_name: nextjs
+    restart: always
+    environment:
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    command: npm run start
+    depends_on:
+      - postgres
+      - postgres-chat
+
+  telegram-bot:
+    build: ./telegram-lingo
+    container_name: telegram-bot
+    restart: always
+    environment:
+      BOT_TOKEN: 7585390422:AAEYpVAJzNs6t4yQ20mOysPUN-d5LytwS0w
+    command: npm run start
+
+volumes:
+  postgres:
+  pgdata-chat:
