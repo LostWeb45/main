@@ -85,7 +85,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <img
           src={
             event.images?.length > 0
-              ? `http://localhost:4000${event.images[0]?.imageUrl}`
+              ? `http://82.202.128.170:4000${event.images[0]?.imageUrl}`
               : "/images/no-image.png"
           }
           alt="event image"
