@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm install --force
+RUN npm install --legacy-peer-deps
 
 EXPOSE 3000
 
