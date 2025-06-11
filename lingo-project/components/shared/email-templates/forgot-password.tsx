@@ -13,7 +13,7 @@ export const ForgotPassword = ({ code }: { code: string }) => `
       </div>
       <div style="text-align: center;">
       <a
-          href="http://localhost:3000/reset-password?code=${code}"
+          href="http://82.202.128.170:3000/reset-password?code=${code}"
           style="
             display: inline-block;
             background-color: #3A5F9D;

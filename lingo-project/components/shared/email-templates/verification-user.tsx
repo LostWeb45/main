@@ -18,7 +18,7 @@ export function VerificationUserTemplate({ code }: Props) {
         </div>
         <div style="text-align: center;">
           <a
-          href="http://localhost:3000/api/auth/verify?code=${code}"
+          href="http://82.202.128.170:3000/api/auth/verify?code=${code}"
           style="
             display: inline-block;
             background-color: #3A5F9D;

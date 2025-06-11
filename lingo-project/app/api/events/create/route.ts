@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         townId: Number(townId),
         participantsCount: Number(participantsCount),
         createdById: Number(userId),
-        statusId: 5,
+        statusId: 1,
         participants: {
           connect: { id: Number(userId) },
         },

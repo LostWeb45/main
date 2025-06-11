@@ -91,7 +91,7 @@ export default function CreateEventPage() {
           const imgForm = new FormData();
           imgForm.append("eventImage", image);
 
-          const res = await fetch("http://localhost:4000/upload/event", {
+          const res = await fetch("http://82.202.128.170:3000/upload/event", {
             method: "POST",
             body: imgForm,
           });
