@@ -57,7 +57,7 @@ app.post(
       return;
     }
 
-    res.json({ url: `/images/avatars/${req.file.filename}` });
+    res.json({ url: `images/avatars/${req.file.filename}` });
   }
 );
 
@@ -70,7 +70,7 @@ app.post(
       return;
     }
 
-    res.json({ url: `/images/events/${req.file.filename}` });
+    res.json({ url: `images/events/${req.file.filename}` });
   }
 );
 
