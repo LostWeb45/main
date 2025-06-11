@@ -28,5 +28,5 @@ export async function POST(
     },
   });
 
-  return NextResponse.redirect(new URL("/admin/events", req.url));
+  return NextResponse.redirect("http://82.202.128.170:3000/admin/events");
 }
