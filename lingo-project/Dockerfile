@@ -6,6 +6,8 @@ COPY package*.json ./
 
 RUN npm install --legacy-peer-deps --production
 
+RUN npm run build
+
 COPY . .
 
 EXPOSE 3000
