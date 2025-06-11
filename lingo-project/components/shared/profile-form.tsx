@@ -56,7 +56,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
     formData.append("avatar", file);
 
     try {
-      const response = await fetch("http://localhost:4000/upload/avatar", {
+      const response = await fetch("http://82.202.128.170:4000/upload/avatar", {
         method: "POST",
         body: formData,
       });
@@ -66,7 +66,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
       }
 
       const result = await response.json();
-      const newUrl = `http://localhost:4000${result.url}`;
+      const newUrl = `http://82.202.128.170:4000/${result.url}`;
       setImageUrl(newUrl);
 
       const updateRes = await fetch("/api/user/update-avatar", {
