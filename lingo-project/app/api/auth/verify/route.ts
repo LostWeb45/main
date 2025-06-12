@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
         id: verificationCode.id,
       },
     });
-    return NextResponse.redirect(new URL("/?verified", req.url));
+    return NextResponse.redirect(new URL("http://82.202.128.170:3000/?verified", req.url));
   } catch (error) {
     console.log("[VERIFY_GET]", error);
   }
