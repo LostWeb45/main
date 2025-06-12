@@ -102,8 +102,11 @@ export const Filters: React.FC<Props> = ({ className }) => {
 
   return (
     <div
-      className={cn("flex justify-between items-center gap-[30px]", className)}
-    >
+    className={cn(
+      "flex justify-between items-center sm:gap-[30px]",
+      className
+    )}
+  >
       <div className="flex items-center flex-wrap gap-4">
         {/* Название */}
         <SearchIvent />
@@ -153,6 +156,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
             ))}
           </SelectContent>
         </Select>
+
         {!allFiltersDefault && (
           <span
             onClick={handleReset}
@@ -161,10 +165,17 @@ export const Filters: React.FC<Props> = ({ className }) => {
             Сбросить
           </span>
         )}
+        <button
+          onClick={createEvent}
+          className="flex sm:hidden justify-center items-center relative gap-2 border font-semibold border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#e6e6f4]"
+        >
+          <p className="text-[#3A5F9D] text-[16px]">Создать событие</p>
+          <Plus className="text-[#3A5F9D]" width={20} />
+        </button>
       </div>
       <button
         onClick={createEvent}
-        className="flex justify-center items-center relative gap-2 border font-semibold border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#e6e6f4]"
+        className="hidden sm:flex justify-center items-center relative gap-2 border font-semibold border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#e6e6f4]"
       >
         <p className="text-[#3A5F9D] text-[16px]">Создать событие</p>
         <Plus className="text-[#3A5F9D]" width={20} />

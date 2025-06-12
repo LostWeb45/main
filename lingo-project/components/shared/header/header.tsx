@@ -6,7 +6,7 @@ import { Container } from "../container";
 import Link from "next/link";
 import { Avatar } from "../../ui";
 import { AvatarFallback, AvatarImage } from "../../ui/avatar";
-import { LogIn } from "lucide-react";
+import { LogIn, Menu, X } from "lucide-react";
 import { AuthModal } from "../modals";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
@@ -20,6 +20,8 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
   const [openAuthModal, setAuthOpenModal] = React.useState(false);
 
   const { data: clientSession } = useSession();
+
+  const [menuOpen, setMenuOpen] = React.useState(false);
 
   const session = clientSession || initSession;
 
@@ -44,13 +46,22 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
           <span className="text-[30px] [font-family:var(--font-montserrat)] font-semibold">
             LinGo
           </span>
-          <span className="text-[#1D3C6A] text-[20px]">Санкт-Петербург</span>
+          <span className="text-[#1D3C6A] text-[20px] hidden sm:block">
+            Санкт-Петербург
+          </span>
         </div>
+
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="sm:hidden focus:outline-none"
+        >
+          {menuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
 
         {session?.user ? (
           <div className="flex justify-center items-center relative gap-3">
             <Link href="/profile" className="flex items-center gap-3">
-              <p className="text-[#2E1A1A] text-[18px] hover:text-[#3A5F9D] transition-colors">
+            <p className="text-[#2E1A1A] text-[18px] hover:text-[#3A5F9D] transition-colors hidden sm:flex">
                 {getFirstName(session.user.name)}
               </p>
               <Avatar className="cursor-pointer w-[50px] h-[50px] hover:opacity-90 transition-opacity">
@@ -92,7 +103,8 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
           onClose={() => setAuthOpenModal(false)}
         />
       </header>
-      <Container className="flex justify-between px-[81px] py-[10px] sticky top-0 shadow-md bg-[#F5F6FA] z-30 mb-[30px] [font-family:var(--font-montserrat)] ">
+
+      <Container className="hidden sm:flex justify-around py-[10px] sticky top-0 shadow-md bg-[#F5F6FA] z-30 mb-[30px] [font-family:var(--font-montserrat)] ">
         {navItems.map((item) => (
           <Link
             key={item.id}
@@ -105,6 +117,21 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
           </Link>
         ))}
       </Container>
+
+      {menuOpen && (
+        <div className="sm:hidden bg-[#F5F6FA] shadow-md px-4 pb-4">
+          {navItems.map((item) => (
+            <Link
+              key={item.id}
+              href={item.href}
+              className="block py-2 text-[#333333] hover:text-[#3A5F9D]"
+              onClick={() => setMenuOpen(false)}
+            >
+              {item.title}
+            </Link>
+          ))}
+        </div>
+      )}
     </>
   );
 };

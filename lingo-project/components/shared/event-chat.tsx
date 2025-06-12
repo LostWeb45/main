@@ -83,7 +83,7 @@ export function EventChat({
   }
 
   return (
-    <div className="p-2 shadow-sm mt-2 w-full h-[360px] flex flex-col overflow-hidden bg-white">
+    <div className="p-2 shadow-sm mt-2 w-full h-[200px] sm:h-[360px] flex flex-col overflow-hidden bg-white">
       <div className="flex-1 overflow-y-auto mb-2 pr-2">
         {messages.map((msg) => {
           const participant = participants.find((p) => p.id === msg.senderId);

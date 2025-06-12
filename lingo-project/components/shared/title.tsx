@@ -31,7 +31,7 @@ export const Title: React.FC<Props> = ({
     sm: "text-[22px]",
     md: "text-[26px]",
     lg: "text-[32px]",
-    xl: "text-[34px]",
+    xl: "text-[22px] sm:text-[34px]",
     "2xl": "text-[48px]",
   } as const;
 
@@ -43,7 +43,7 @@ export const Title: React.FC<Props> = ({
         height="26"
         viewBox="0 0 26 26"
         fill="none"
-        className="ml-[3px] mb-[2px] inline-block opacity-60"
+       className="ml-[3px] w-[17px] h-[17px] sm:w-[26px] sm:h-[26px] mb-[2px] inline-block opacity-60"
       >
         <path
           d="M2 0V4H19.18L0 23.18L2.82 26L22 6.82V24H26V0H2Z"

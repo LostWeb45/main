@@ -74,13 +74,15 @@ export const RegisterForm: React.FC<Props> = ({ onClose, className }) => {
   return (
     <FormProvider {...form}>
       <form
-        className={`flex flex-col gap-5 ${className || ""}`}
+        className={`flex flex-col gap-1 sm:gap-5 ${className || ""}`}
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="flex justify-between items-center">
           <div className="mr-2">
-            <DialogTitle className="text-[26px]">Регистрация</DialogTitle>
-            <p className="text-gray-400">Введите свои данные для регистрации</p>
+          <DialogTitle className="sm:text-[26px]">Регистрация</DialogTitle>
+            <p className="hidden sm:block text-gray-400">
+              Введите свои данные для регистрации
+            </p>
           </div>
           <img
             src="/images/phone-icon.png"

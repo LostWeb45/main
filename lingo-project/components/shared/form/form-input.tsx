@@ -41,13 +41,13 @@ export const FormInput: React.FC<Props> = ({
   return (
     <div className={className}>
       {label && (
-        <p className="font-medium mb-2">
+        <p className="font-medium sm:mb-2">
           {label} {required && <RequiredSymbol />}
         </p>
       )}
 
       <div className="relative">
-        <Input className="h-12" {...register(name)} {...props} />
+        <Input className="sm:h-12" {...register(name)} {...props} />
 
         {Boolean(text) && !disablesDel && (
           <ClearButton onClick={onClickClear} />

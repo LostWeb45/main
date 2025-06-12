@@ -31,7 +31,7 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="w-[550px] bg-white p-10">
+     <DialogContent className="w-[550px] bg-white sm:p-10">
         {type === "login" && <LoginForm onClose={handleClose} />}
         {type === "register" && <RegisterForm onClose={handleClose} />}
         {type === "forgot" && <ForgotPasswordForm />}

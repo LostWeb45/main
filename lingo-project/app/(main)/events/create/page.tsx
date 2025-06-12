@@ -133,8 +133,8 @@ export default function CreateEventPage() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-[18px]">
         <Title className="font-semibold " text="Создать событие" />
         <Separator />
-        <div className="flex justify-between gap-[30px]">
-          <div className=" w-[60%] flex flex-col gap-[18px]">
+        <div className="flex flex-col sm:flex-row justify-between gap-[30px]">
+          <div className=" sm:w-[60%] flex flex-col gap-[18px]">
             <div className="space-y-2">
               <Label className="text-[17px]" htmlFor="title">
                 Название
@@ -146,7 +146,7 @@ export default function CreateEventPage() {
                 required
               />
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div>
                 <Label className="text-[17px]" htmlFor="images">
                   Изображения
@@ -205,7 +205,7 @@ export default function CreateEventPage() {
               <RichTextEditor value={description} onChange={setDescription} />
             </div>
           </div>
-          <div className="w-[40%] flex flex-col gap-[18px]">
+          <div className="sm:w-[40%] flex flex-col gap-[18px]">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-[17px]" htmlFor="startDate">

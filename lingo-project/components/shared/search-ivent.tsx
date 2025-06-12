@@ -13,6 +13,8 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     const query = searchParams.get("query");
     if (query) {
@@ -40,10 +42,18 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
+  const handleContainerClick = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+
   return (
     <div
+    onClick={handleContainerClick}
       className={cn(
-        "flex flex-1 justify-center relative w-[280px] h-[40px] bg-[#F5F6FA]",
+        "flex flex-1 justify-center relative w-[200px] sm:w-[280px] h-[40px] bg-[#F5F6FA]",
         className
       )}
     >
@@ -61,7 +71,8 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
         />
       </svg>
       <input
-        className="rounded-2xl outline-none w-[200px] border-none bg-[#F5F6FA] placeholder:text-[#333333] text-[14px]"
+        ref={inputRef}
+        className="rounded-2xl outline-none w-[200px] border-none bg-[#F5F6FA] pl-[30px] sm:pl-[0px] placeholder:text-[#333333] text-[14px]"
         type="text"
         placeholder="Название мероприятия"
         value={searchValue}

@@ -44,7 +44,7 @@ export default async function EventPage({
   return (
     <Container className="flex flex-col">
       {event.images.length > 0 && (
-        <Carousel className=" w-[1359px]">
+       <Carousel className=" sm:w-[1359px]">
           <CarouselContent>
             {event.images.map((img, i) => (
               <CarouselItem key={i}>
@@ -68,12 +68,12 @@ export default async function EventPage({
       )}
       <div
         className={cn(
-          "flex justify-between gap-[30px]",
+          "flex flex-col justify-between sm:flex-row gap-[30px]",
           event.images.length > 0 ? "mt-[20px]" : ""
         )}
       >
-        <div className="flex flex-col gap-[15px] w-[63%]">
-          <Title text={event.title} className="font-bold text-[33px]" />
+        <div className="flex flex-col gap-[15px] sm:w-[63%]">
+        <Title text={event.title} className="font-bold sm:text-[33px]" />
           <div className="flex flex-col items-start gap-2">
             <p className=" [font-family:var(--font-montserrat)] font-bold text-[17px] opacity-60 text-[#1D3C6A]">
               {event.age}+
@@ -93,17 +93,17 @@ export default async function EventPage({
           )}
         </div>
 
-        <div className="w-[37%] mt-[7px]">
+        <div className="sm:w-[37%] mt-[7px] ">
           <div className="flex flex-col gap-4">
             <div className="flex justify-between items-center opacity-90">
-              <p className="text-[21px] font-medium">
+            <p className="sm:text-[21px] font-medium">
                 {getFormattedDateTime(
                   new Date(event.startDate),
                   event.startTime,
                   event.duration
                 )}
               </p>
-              <p className="text-[23px] font-medium opacity-90">
+              <p className="sm:text-[23px] font-medium opacity-90">
                 {event.price ? `Средняя цена: ${event.price}₽` : "бесплатно"}
               </p>
             </div>
