@@ -44,7 +44,7 @@ export default async function EventPage({
   return (
     <Container className="flex flex-col">
       {event.images.length > 0 && (
-       <Carousel className=" sm:w-[1359px]">
+       <Carousel>
           <CarouselContent>
             {event.images.map((img, i) => (
               <CarouselItem key={i}>
