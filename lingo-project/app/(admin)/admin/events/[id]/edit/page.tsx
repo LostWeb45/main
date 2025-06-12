@@ -53,7 +53,7 @@ export default async function EditEventPage({
       {event.images.map((image) => (
         <div key={image.id} className="relative inline-block">
           <img
-            src={`http://82.202.128.170/${image.imageUrl}`}
+            src={`http://82.202.128.170:4000/${image.imageUrl}`}
             alt=""
             className="w-40 h-40 object-cover"
           />
