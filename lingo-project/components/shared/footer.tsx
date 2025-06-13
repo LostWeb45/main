@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import React from "react";
 
 interface Props {
@@ -30,9 +31,12 @@ export const Footer: React.FC<Props> = ({ className }) => {
           <div className="text-[19px] text-[#333333] font-medium">
             О компании
           </div>
-          <div className="text-[16px] text-[#585858] font-medium ">
+          <Link
+            href={"/terms"}
+            className="text-[16px] hover:text-[#3A5F9D] duration-200 text-[#585858] font-medium "
+          >
             Пользовательское соглашение
-          </div>
+          </Link>
         </div>
         <div className="flex flex-col gap-[10px]">
           <div className="text-[19px] text-[#333333] font-medium">
