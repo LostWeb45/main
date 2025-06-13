@@ -42,14 +42,14 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
       <header
         className={cn("flex justify-between items-center m-[16px]", className)}
       >
-        <div className="flex items-center gap-2">
-          <span className="text-[30px] [font-family:var(--font-montserrat)] font-semibold">
+        <Link href="/" className="flex items-center gap-2 cursor-pointer">
+        <span className="text-[30px] hover:text-[#3A5F9D] duration-200 [font-family:var(--font-montserrat)] font-semibold">
             LinGo
           </span>
           <span className="text-[#1D3C6A] text-[20px] hidden sm:block">
             Санкт-Петербург
           </span>
-        </div>
+        </Link>
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}

@@ -266,6 +266,7 @@ export default function CreateEventPage() {
                   Продолжительность (мин)
                 </Label>
                 <Input
+                  min={0}
                   type="number"
                   name="duration"
                   value={form.duration}
@@ -278,6 +279,7 @@ export default function CreateEventPage() {
                   Цена
                 </Label>
                 <Input
+                  min={0}
                   type="number"
                   name="price"
                   value={form.price}
@@ -302,6 +304,7 @@ export default function CreateEventPage() {
                   Возрастное ограничение
                 </Label>
                 <Input
+                  min={0}
                   type="number"
                   name="age"
                   value={form.age}

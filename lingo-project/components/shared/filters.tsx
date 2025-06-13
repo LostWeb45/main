@@ -30,6 +30,7 @@ const priceOptions = [
 
 const ageOptions = [
   { label: "Любой возраст", value: "any" },
+  { label: "0+", value: "0" },
   { label: "14+", value: "14" },
   { label: "16+", value: "16" },
   { label: "18+", value: "18" },
