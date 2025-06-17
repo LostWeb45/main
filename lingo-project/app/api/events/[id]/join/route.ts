@@ -22,20 +22,29 @@ export async function POST(
   const user = await prisma.user.findUnique({
     where: { email: session.user.email! },
   });
-  if (!user)
+  if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
 
-  const alreadyJoined = await prisma.event.findFirst({
-    where: {
-      id: eventId,
-      participants: {
-        some: { id: user.id },
-      },
-    },
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+    include: { participants: true },
   });
 
-  if (alreadyJoined) {
+  if (!event) {
+    return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+
+  const isAlreadyJoined = event.participants.some((p) => p.id === user.id);
+  if (isAlreadyJoined) {
     return NextResponse.json({ message: "Already joined" });
+  }
+
+  if (event.participants.length >= event.participantsCount) {
+    return NextResponse.json(
+      { error: "Event is full" },
+      { status: 400 }
+    );
   }
 
   await prisma.event.update({

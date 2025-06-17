@@ -24,7 +24,9 @@ interface Props {
 const priceOptions = [
   { label: "Любая цена", value: "any" },
   { label: "До 1000₽", value: "0-1000" },
-  { label: "1000₽–3000₽", value: "1000-3000" },
+  { label: "1000₽–1500₽", value: "1000-1500" },
+  { label: "1500₽–2000₽", value: "1500-2000" },
+  { label: "2000₽–3000₽", value: "2000-3000" },
   { label: "Больше 3000₽", value: "3000+" },
 ];
 

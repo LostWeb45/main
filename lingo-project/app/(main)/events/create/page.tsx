@@ -79,10 +79,31 @@ export default function CreateEventPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  
+  const validateForm = () => {
+    const errors: string[] = [];
+
+    if (!description.trim()) errors.push("Заполните описание события.");
+    if (!form.startDate) errors.push("Выберите дату начала.");
+    if (!form.startTime) errors.push("Укажите время начала.");
+    if (!form.place.trim()) errors.push("Укажите место проведения.");
+    if (!form.categoryId) errors.push("Выберите категорию.");
+    if (!form.townId) errors.push("Выберите город.");
+
+    return errors;
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
+    const errors = validateForm();
+    if (errors.length > 0) {
+      toast.error(errors.join("\n"), { duration: 5000 });
+      return;
+    }
+
+    setLoading(true);
     try {
       const imageUrls: string[] = [];
 
@@ -113,16 +134,14 @@ export default function CreateEventPage() {
         body: JSON.stringify(eventData),
       });
       if (res.ok) {
-        toast.success("Событие отправлено на модерацию", {
-          duration: 3000,
-        });
+        toast.success("Событие отправлено на модерацию", { duration: 3000 });
         router.push("/events");
       } else {
-        alert("Ошибка при создании события");
+        toast.error("Ошибка при создании события");
       }
     } catch (error) {
       console.error(error);
-      alert("Произошла ошибка при создании события");
+      toast.error("Произошла ошибка при создании события");
     } finally {
       setLoading(false);
     }

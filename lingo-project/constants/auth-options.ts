@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
-          redirect_uri: "https://lingoproject.ru/api/auth/callback/google"
+          redirect_uri: "http://82.202.128.170:3000/api/auth/callback/google"
         }
       },
       profile(profile) {
