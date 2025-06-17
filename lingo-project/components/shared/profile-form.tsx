@@ -49,7 +49,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
     formData.append("avatar", file);
 
     try {
-      const response = await fetch("http://82.202.128.170/upload/avatar", {
+      const response = await fetch("http://82.202.128.170:4000/upload/avatar", {
         method: "POST",
         body: formData,
       });
@@ -57,7 +57,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
       if (!response.ok) throw new Error("Ошибка при загрузке изображения");
 
       const result = await response.json();
-      const newUrl = `http://82.202.128.170/${result.url}`;
+      const newUrl = `http://82.202.128.170:4000/${result.url}`;
       setImageUrl(newUrl);
 
       const updateRes = await fetch("/api/user/update-avatar", {
