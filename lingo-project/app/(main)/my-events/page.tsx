@@ -33,6 +33,15 @@ export default function MyEventsPage() {
     }
   }, [status, session, router]);
 
+  const createEvent = () => {
+      if (!session) {
+        toast.error("Сначала войдите в аккаунт");
+        return;
+      }
+  
+      router.push("/events/create");
+    };
+
   const handleLeave = (eventId: number) => {
     startTransition(async () => {
       const res = await fetch(`/api/events/${eventId}/leave`, {
@@ -100,7 +109,7 @@ export default function MyEventsPage() {
         <Title text="Мои события" className="font-medium" />
 
         <button
-          onClick={() => redirect("/events/create")}
+          onClick={createEvent}
           className="flex justify-center items-center relative gap-2 border font-semibold border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#e6e6f4]"
         >
           <p className="text-[#3A5F9D] text-[16px]">Создать событие</p>
