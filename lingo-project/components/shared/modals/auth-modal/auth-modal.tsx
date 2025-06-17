@@ -60,7 +60,7 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
             variant={"ghost"}
             onClick={() =>
               signIn("google", {
-                callbackUrl: "/?logined",
+                callbackUrl: "https://lingoproject.ru:3000/?logined",
                 redirect: true,
               })
             }
