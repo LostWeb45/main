@@ -1,9 +1,11 @@
 import YandexProvider from "next-auth/providers/yandex";
+import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/prisma/prisma-client";
 import { compare } from "bcryptjs";
 import { YandexProfile } from "next-auth/providers/yandex";
 import { NextAuthOptions, DefaultSession } from "next-auth";
+import { Prisma } from "@prisma/client";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -21,8 +23,12 @@ declare module "next-auth" {
     picture?: string;
     role?: string;
     email?: string;
+    provider?: string;
   }
 }
+
+type UserWithAccounts = Prisma.UserGetPayload<{ include: { accounts: true } }>;
+
 export const authOptions: NextAuthOptions = {
   providers: [
     YandexProvider({
@@ -34,18 +40,25 @@ export const authOptions: NextAuthOptions = {
         },
       },
       profile(profile: YandexProfile) {
-        const userObj = {
+        return {
           id: profile.login,
           name: profile.display_name || profile.real_name || profile.login,
           email: profile.default_email,
           image: `https://avatars.yandex.net/get-yapic/${profile.default_avatar_id}/islands-200`,
+          role: "ORGANIZER",
         };
+      },
+    }),
 
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      profile(profile) {
         return {
-          id: userObj.id,
-          name: userObj.name,
-          email: userObj.email,
-          image: userObj.image,
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
           role: "ORGANIZER",
         };
       },
@@ -88,11 +101,10 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user, account, profile }) {
+      // Credentials
       if (account?.provider === "credentials") {
         const findUser = await prisma.user.findFirst({
-          where: {
-            email: token.email as string,
-          },
+          where: { email: token.email as string },
         });
 
         if (findUser) {
@@ -105,80 +117,178 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
+      // Yandex
       if (account?.provider === "yandex" && profile) {
         const yandexProfile = profile as YandexProfile;
 
-        let user = await prisma.user.findFirst({
-          where: {
-            accounts: {
-              some: {
-                provider: account.provider,
-                providerAccountId: account.providerAccountId,
-              },
-            },
-          },
-          include: { accounts: true },
-        });
-
-        if (!user) {
-          user = await prisma.user.create({
-            data: {
-              email: yandexProfile.default_email as string,
-              name:
-                yandexProfile.display_name ||
-                yandexProfile.real_name ||
-                yandexProfile.login,
-              image: `https://avatars.yandex.net/get-yapic/${yandexProfile.default_avatar_id}/islands-200`,
-              role: "ORGANIZER",
-              password: "",
-              emailVerified: new Date(),
+        if (account.provider && account.providerAccountId) {
+          let user = await prisma.user.findFirst({
+            where: {
               accounts: {
-                create: {
-                  type: "OAUTH",
+                some: {
                   provider: account.provider,
                   providerAccountId: account.providerAccountId,
-                  access_token: account.access_token,
-                  refresh_token: account.refresh_token,
-                  scope: account.scope,
-                  token_type: account.token_type,
-                  session_state: account.session_state,
                 },
               },
             },
             include: { accounts: true },
           });
-        } else {
-          await prisma.account.updateMany({
-            where: {
-              userId: user.id,
-              provider: account.provider,
-            },
-            data: {
-              providerAccountId: account.providerAccountId || "",
-              access_token: account.access_token,
-              refresh_token: account.refresh_token,
-              scope: account.scope,
-              token_type: account.token_type,
-              session_state: account.session_state,
-            },
-          });
+
+          if (!user) {
+            user = await prisma.user.create({
+              data: {
+                email: yandexProfile.default_email as string,
+                name:
+                  yandexProfile.display_name ||
+                  yandexProfile.real_name ||
+                  yandexProfile.login,
+                image: `https://avatars.yandex.net/get-yapic/${yandexProfile.default_avatar_id}/islands-200`,
+                role: "ORGANIZER",
+                password: "",
+                emailVerified: new Date(),
+                accounts: {
+                  create: {
+                    type: "OAUTH",
+                    provider: account.provider,
+                    providerAccountId: account.providerAccountId,
+                    access_token: account.access_token ?? undefined,
+                    refresh_token: account.refresh_token ?? undefined,
+                    scope: account.scope ?? undefined,
+                    token_type: account.token_type ?? undefined,
+                    session_state: account.session_state ?? undefined,
+                  },
+                },
+              },
+              include: { accounts: true },
+            });
+          } else {
+            await prisma.account.updateMany({
+              where: {
+                userId: user.id,
+                provider: account.provider,
+              },
+              data: {
+                providerAccountId: account.providerAccountId,
+                access_token: account.access_token ?? undefined,
+                refresh_token: account.refresh_token ?? undefined,
+                scope: account.scope ?? undefined,
+                token_type: account.token_type ?? undefined,
+                session_state: account.session_state ?? undefined,
+              },
+            });
+          }
+
+          token.id = String(user.id);
+          token.name = user.name;
+          token.email = user.email;
+          token.image = user.image ?? undefined;
+          token.role = user.role;
+          token.provider = account.provider;
         }
-
-        token.id = String(user.id);
-        token.name = user.name;
-        token.email = user.email;
-        token.image = user.image ?? undefined;
-        token.role = user.role;
-        token.provider = account.provider;
       }
-      const updatedUser = await prisma.user.findUnique({
-        where: { id: Number(token.id) },
-      });
 
-      if (updatedUser) {
-        token.name = updatedUser.name;
-        token.email = updatedUser.email;
-        token.image = updatedUser.image;
+      if (account?.provider === "google" && profile) {
+        if (account.provider && account.providerAccountId) {
+          let user = await prisma.user.findFirst({
+            where: {
+              accounts: {
+                some: {
+                  provider: account.provider,
+                  providerAccountId: account.providerAccountId,
+                },
+              },
+            },
+            include: { accounts: true },
+          });
+
+          if (!user) {
+            user = await prisma.user.findUnique({
+              where: { email: profile.email },
+              include: { accounts: true },
+            });
+
+            if (!user) {
+              user = (await prisma.user.create({
+                data: {
+                  email: profile.email || "",
+                  name: profile.name || "",
+                  image: profile.picture,
+                  role: "ORGANIZER",
+                  password: "",
+                  emailVerified: new Date(),
+                  accounts: {
+                    create: {
+                      type: "OAUTH",
+                      provider: account.provider,
+                      providerAccountId: account.providerAccountId,
+                      access_token: account.access_token ?? undefined,
+                      refresh_token: account.refresh_token ?? undefined,
+                      scope: account.scope ?? undefined,
+                      token_type: account.token_type ?? undefined,
+                      session_state: account.session_state ?? undefined,
+                    },
+                  },
+                },
+                include: { accounts: true },
+              })) as UserWithAccounts;
+            } else {
+              const existingAccount = user.accounts.find(
+                (acc) => acc.provider === account.provider
+              );
+
+              if (!existingAccount) {
+                await prisma.account.create({
+                  data: {
+                    userId: user.id,
+                    type: "OAUTH",
+                    provider: account.provider,
+                    providerAccountId: account.providerAccountId,
+                    access_token: account.access_token ?? undefined,
+                    refresh_token: account.refresh_token ?? undefined,
+                    scope: account.scope ?? undefined,
+                    token_type: account.token_type ?? undefined,
+                    session_state: account.session_state ?? undefined,
+                  },
+                });
+              } else {
+                await prisma.account.updateMany({
+                  where: {
+                    userId: user.id,
+                    provider: account.provider,
+                  },
+                  data: {
+                    providerAccountId: account.providerAccountId,
+                    access_token: account.access_token ?? undefined,
+                    refresh_token: account.refresh_token ?? undefined,
+                    scope: account.scope ?? undefined,
+                    token_type: account.token_type ?? undefined,
+                    session_state: account.session_state ?? undefined,
+                  },
+                });
+              }
+            }
+          }
+
+          token.id = String(user.id);
+          token.name = user.name;
+          token.email = user.email;
+          token.image = user.image ?? undefined;
+          token.role = user.role;
+          token.provider = account.provider;
+        }
+      }
+
+      // Обновляем токен из базы, если нужно
+      if (token.id) {
+        const updatedUser = await prisma.user.findUnique({
+          where: { id: Number(token.id) },
+        });
+
+        if (updatedUser) {
+          token.name = updatedUser.name;
+          token.email = updatedUser.email;
+          token.image = updatedUser.image;
+        }
       }
 
       return token;

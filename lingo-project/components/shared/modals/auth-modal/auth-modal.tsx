@@ -59,13 +59,17 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
             className="gap-2 h-12 flex-1"
             variant={"ghost"}
             onClick={() =>
-              signIn("vk", {
-                callbackUrl: "http://localhost:3000",
+              signIn("google", {
+                callbackUrl: "/?logined",
                 redirect: true,
               })
             }
           >
-            <img src="/images/vk.svg" alt="vk" className="w-[30px] h-[30px]" />
+            <img
+              src="/images/google.svg"
+              alt="google"
+              className="w-[30px] h-[30px]"
+            />
           </Button>
         </div>
 
