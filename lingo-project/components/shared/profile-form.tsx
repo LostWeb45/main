@@ -57,7 +57,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
       if (!response.ok) throw new Error("Ошибка при загрузке изображения");
 
       const result = await response.json();
-      const newUrl = `http://localhost:4000${result.url}`;
+      const newUrl = `http://localhost:4000/${result.url}`;
       setImageUrl(newUrl);
 
       const updateRes = await fetch("/api/user/update-avatar", {
