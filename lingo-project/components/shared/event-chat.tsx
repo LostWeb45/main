@@ -82,68 +82,106 @@ export function EventChat({
     );
   }
 
+  const formatDateLabel = (date: Date): string => {
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    const isSameDate = (d1: Date, d2: Date) =>
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate();
+
+    if (isSameDate(date, today)) return "Сегодня";
+    if (isSameDate(date, yesterday)) return "Вчера";
+
+    return date.toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "long",
+    });
+  };
+
+  const groupMessagesByDate = (messages: ChatMessage[]) => {
+    const groups: Record<string, ChatMessage[]> = {};
+
+    messages.forEach((msg) => {
+      const dateObj = new Date(msg.createdAt);
+      const label = formatDateLabel(dateObj);
+      if (!groups[label]) groups[label] = [];
+      groups[label].push(msg);
+    });
+
+    return Object.entries(groups);
+  };
+
+
   return (
     <div className="p-2 shadow-sm mt-2 w-full h-[280px] sm:h-[360px] flex flex-col overflow-hidden bg-white">
       <div className="flex-1 overflow-y-auto mb-2 pr-2">
-        {messages.map((msg) => {
-          const participant = participants.find((p) => p.id === msg.senderId);
-          const isUserMessage = msg.senderId === userId;
+      {groupMessagesByDate(messages).map(([label, msgs]) => (
+          <div key={label}>
+            <div className="text-center text-gray-500 text-sm my-2">
+              {label}
+            </div>
+            {msgs.map((msg) => {
+              const participant = participants.find(
+                (p) => p.id === msg.senderId
+              );
+              const isUserMessage = msg.senderId === userId;
 
-          return (
-            <div
-              key={msg.id}
-              className={`mb-1 flex flex-col items-start max-w-fit ${
-                isUserMessage ? "ml-auto" : "mr-auto text-left"
-              }`}
-            >
-              <div className="flex gap-2 items-center">
-                {!isUserMessage && (
-                  <Avatar
-                    key={msg.id}
-                    className={`cursor-pointer w-[33px] h-[33px] hover:opacity-90 transition-opacity `}
-                  >
-                    {participant?.image ? (
-                      <AvatarImage
-                        src={participant.image}
-                        className="w-full h-full object-cover rounded-full"
-                      />
-                    ) : (
-                      <AvatarFallback className="bg-[#fcfcfc]  text-[16px]">
-                        {participant?.name
-                          ? participant.name.charAt(0).toUpperCase()
-                          : "П"}
-                      </AvatarFallback>
-                    )}
-                  </Avatar>
-                )}
-                <span
-                  className={`font-semibold  ${
-                    isUserMessage ? "text-right" : "text-right"
+              return (
+                <div
+                  key={msg.id}
+                  className={`mb-1 flex flex-col items-start max-w-fit ${
+                    isUserMessage ? "ml-auto" : "mr-auto text-left"
                   }`}
                 >
-                  {isUserMessage
-                    ? "Вы"
-                    : participant?.name || `Пользователь ${msg.senderId}`}
-                </span>
-              </div>
-              <div
-                className={`pl-2 pr-4 py-1 rounded-md mt-[4px] ${
-                  isUserMessage ? "bg-[#d9e4f8] " : "bg-[#ece8e8]"
-                }`}
-              >
-                <div className="text-[18px] break-words whitespace-pre-wrap max-w-[300px] sm:max-w-[400px]">
-                  {msg.message}
+                  <div className="flex gap-2 items-center">
+                    {!isUserMessage && (
+                      <Avatar
+                        key={msg.id}
+                        className="cursor-pointer w-[33px] h-[33px] hover:opacity-90 transition-opacity"
+                      >
+                        {participant?.image ? (
+                          <AvatarImage
+                            src={participant.image}
+                            className="w-full h-full object-cover rounded-full"
+                          />
+                        ) : (
+                          <AvatarFallback className="bg-[#fcfcfc] text-[16px]">
+                            {participant?.name
+                              ? participant.name.charAt(0).toUpperCase()
+                              : "П"}
+                          </AvatarFallback>
+                        )}
+                      </Avatar>
+                    )}
+                    <span className="font-semibold">
+                      {isUserMessage
+                        ? "Вы"
+                        : participant?.name || `Пользователь ${msg.senderId}`}
+                    </span>
+                  </div>
+                  <div
+                    className={`pl-2 pr-4 py-1 rounded-md mt-[4px] ${
+                      isUserMessage ? "bg-[#d9e4f8]" : "bg-[#ece8e8]"
+                    }`}
+                  >
+                    <div className="text-[18px] break-words whitespace-pre-wrap max-w-[300px] sm:max-w-[400px]">
+                      {msg.message}
+                    </div>
+                    <small className="text-xs text-gray-500">
+                      {new Date(msg.createdAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </small>
+                  </div>
                 </div>
-                <small className="text-xs text-gray-500">
-                  {new Date(msg.createdAt).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </small>
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+        ))}
         <div ref={bottomRef} />
       </div>
 
