@@ -4,12 +4,13 @@ import { prisma } from "@/prisma/prisma-client";
 function combineDateAndTime(date: Date, time: string): Date {
   const [hours, minutes] = time.split(":").map(Number);
   const fullDate = new Date(date);
-  fullDate.setHours(hours, minutes, 0, 0);
+  fullDate.setHours(hours + 3, minutes, 0, 0); 
   return fullDate;
 }
 
 export async function GET() {
-  const now = new Date(new Date().getTime() + 2 * 60 * 60 * 1000); // UTC+2
+  const now = new Date(new Date().getTime() + 3 * 60 * 60 * 1000); // UTC+3 для СПБ
+
 
   const inAnHour = new Date(now.getTime() + 60 * 60 * 1000);
 
