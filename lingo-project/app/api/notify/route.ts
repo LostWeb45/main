@@ -9,8 +9,13 @@ function combineDateAndTime(date: Date, time: string): Date {
 }
 
 export async function GET() {
-  const now = new Date();
+  const now = new Date(new Date().getTime() + 2 * 60 * 60 * 1000); // UTC+2
+
   const inAnHour = new Date(now.getTime() + 60 * 60 * 1000);
+
+  // Устанавливаем окно ±30 минут от inAnHour
+  const startWindow = new Date(inAnHour.getTime() - 30 * 60 * 1000);
+  const endWindow = new Date(inAnHour.getTime() + 30 * 60 * 1000);
 
   // Находим статус "Предстоящее"
   const upcomingStatus = await prisma.status.findFirst({
@@ -40,9 +45,9 @@ export async function GET() {
 
   for (const event of events) {
     const eventDateTime = combineDateAndTime(event.startDate, event.startTime);
-    const timeDiff = Math.abs(eventDateTime.getTime() - inAnHour.getTime());
 
-    if (timeDiff > 5 * 60 * 1000) continue;
+    // Проверяем попадание события в заданное окно
+    if (eventDateTime < startWindow || eventDateTime > endWindow) continue;
 
     const message = `🔔 *Напоминание!*\nСобытие *${event.title}* начнётся в ${event.startTime}.\nКатегория: ${event.category.name}`;
 
