@@ -37,6 +37,12 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
     { id: 4, title: "События с вами", href: "/my-events" },
   ];
 
+  const isAdmin = session?.user?.role === "ADMIN";
+
+  if (isAdmin) {
+    navItems.push({ id: 99, title: "Админка", href: "/admin/events" });
+  }
+
   return (
     <>
       <header
